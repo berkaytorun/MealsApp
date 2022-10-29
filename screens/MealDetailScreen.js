@@ -12,6 +12,7 @@ function MealDetailScreen({ route, navigation }) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            title: currentMeal.title,
             headerRight: () => {
                 return (
                     <IconButton
