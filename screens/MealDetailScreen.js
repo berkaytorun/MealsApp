@@ -3,12 +3,15 @@ import List from '../components/List';
 import MealDetails from '../components/MealDetails';
 import SubTitle from '../components/SubTitle';
 import { MEALS } from '../data/dummy-data';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useContext } from 'react';
 import IconButton from '../components/IconButton';
+import { FavoritesContext } from '../store/context/favorites-context';
 
 function MealDetailScreen({ route, navigation }) {
     const { mealId } = route.params;
     const currentMeal = MEALS.find((meal) => meal.id === mealId);
+    const favorites = useContext(FavoritesContext);
+    const isFavorite = favorites.ids.includes(mealId);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -16,14 +19,14 @@ function MealDetailScreen({ route, navigation }) {
             headerRight: () => {
                 return (
                     <IconButton
-                        icon='ios-star'
+                        icon={isFavorite ? 'star' : 'star-outline'}
                         color='#fff'
-                        onPress={() => console.log('favorite')}
+                        onPress={() => (isFavorite ? favorites.removeFavorite(mealId) : favorites.addFavorite(mealId))}
                     />
                 );
             },
         });
-    }, [navigation]);
+    }, [navigation, isFavorite]);
 
     return (
         <View style={styles.container}>
