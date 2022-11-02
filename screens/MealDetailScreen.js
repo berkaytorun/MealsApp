@@ -6,12 +6,18 @@ import { MEALS } from '../data/dummy-data';
 import { useLayoutEffect, useContext } from 'react';
 import IconButton from '../components/IconButton';
 import { FavoritesContext } from '../store/context/favorites-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFavorite, removeFavorite } from '../store/redux/favorites';
 
 function MealDetailScreen({ route, navigation }) {
     const { mealId } = route.params;
     const currentMeal = MEALS.find((meal) => meal.id === mealId);
-    const favorites = useContext(FavoritesContext);
-    const isFavorite = favorites.ids.includes(mealId);
+    // const favorites = useContext(FavoritesContext);
+    // const isFavorite = favorites.ids.includes(mealId);
+
+    const favoriteMealIds = useSelector((state) => state.favoriteMeals.ids);
+    const isFavorite = favoriteMealIds.includes(mealId);
+    const dispatch = useDispatch();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -21,7 +27,11 @@ function MealDetailScreen({ route, navigation }) {
                     <IconButton
                         icon={isFavorite ? 'star' : 'star-outline'}
                         color='#fff'
-                        onPress={() => (isFavorite ? favorites.removeFavorite(mealId) : favorites.addFavorite(mealId))}
+                        onPress={() =>
+                            isFavorite
+                                ? dispatch(removeFavorite({ id: mealId }))
+                                : dispatch(addFavorite({ id: mealId }))
+                        }
                     />
                 );
             },
